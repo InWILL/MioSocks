@@ -21,6 +21,10 @@ Download available at <https://github.com/InWILL/MioSocks/releases/latest>.
 
 * [Microsoft Visual C++ Redistributable](https://docs.microsoft.com/en-US/cpp/windows/latest-supported-vc-redist?view=msvc-170)
 
+## Built With
+
+* [WinDivert](https://github.com/basil00/WinDivert) - Used to handle tcp connection
+
 ## Versioning
 
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/InWILL/MioSocks/tags). 
