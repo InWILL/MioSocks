@@ -1,0 +1,44 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.34928.147
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MioSocks", "MioSocks\MioSocks.vcxproj", "{0E802836-8B00-4E2A-AD9D-7EA60E560CC5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{FFD72D04-EF1A-484B-82FB-C5CBA4CBFFC5} = {FFD72D04-EF1A-484B-82FB-C5CBA4CBFFC5}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "socks5", "socks5\socks5.vcxproj", "{FFD72D04-EF1A-484B-82FB-C5CBA4CBFFC5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0E802836-8B00-4E2A-AD9D-7EA60E560CC5}.Debug|x64.ActiveCfg = Debug|x64
+		{0E802836-8B00-4E2A-AD9D-7EA60E560CC5}.Debug|x64.Build.0 = Debug|x64
+		{0E802836-8B00-4E2A-AD9D-7EA60E560CC5}.Debug|x86.ActiveCfg = Debug|Win32
+		{0E802836-8B00-4E2A-AD9D-7EA60E560CC5}.Debug|x86.Build.0 = Debug|Win32
+		{0E802836-8B00-4E2A-AD9D-7EA60E560CC5}.Release|x64.ActiveCfg = Release|x64
+		{0E802836-8B00-4E2A-AD9D-7EA60E560CC5}.Release|x64.Build.0 = Release|x64
+		{0E802836-8B00-4E2A-AD9D-7EA60E560CC5}.Release|x86.ActiveCfg = Release|Win32
+		{0E802836-8B00-4E2A-AD9D-7EA60E560CC5}.Release|x86.Build.0 = Release|Win32
+		{FFD72D04-EF1A-484B-82FB-C5CBA4CBFFC5}.Debug|x64.ActiveCfg = Debug|x64
+		{FFD72D04-EF1A-484B-82FB-C5CBA4CBFFC5}.Debug|x64.Build.0 = Debug|x64
+		{FFD72D04-EF1A-484B-82FB-C5CBA4CBFFC5}.Debug|x86.ActiveCfg = Debug|Win32
+		{FFD72D04-EF1A-484B-82FB-C5CBA4CBFFC5}.Debug|x86.Build.0 = Debug|Win32
+		{FFD72D04-EF1A-484B-82FB-C5CBA4CBFFC5}.Release|x64.ActiveCfg = Release|x64
+		{FFD72D04-EF1A-484B-82FB-C5CBA4CBFFC5}.Release|x64.Build.0 = Release|x64
+		{FFD72D04-EF1A-484B-82FB-C5CBA4CBFFC5}.Release|x86.ActiveCfg = Release|Win32
+		{FFD72D04-EF1A-484B-82FB-C5CBA4CBFFC5}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7C3964A3-F586-489E-86D7-AB66A3624315}
+	EndGlobalSection
+EndGlobal
