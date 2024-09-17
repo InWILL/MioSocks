@@ -2,6 +2,10 @@
 
 const int DEFAULT_BUFLEN = 1024;
 
+char socks5_server[100] = "127.0.0.1";
+unsigned short socks5_port = 2801;
+unsigned short tcp_port = 2805;
+
 static void forward(SOCKET src, SOCKET dst)
 {
     char recvbuf[DEFAULT_BUFLEN];
@@ -34,8 +38,8 @@ static void process(SOCKET client, UINT32 addr, UINT16 port)
     // SOCKS5
     struct sockaddr_in socks5addr;
     socks5addr.sin_family = AF_INET;
-    inet_pton(AF_INET, "127.0.0.1", &(socks5addr.sin_addr));
-    socks5addr.sin_port = htons(2801);
+    inet_pton(AF_INET, socks5_server, &(socks5addr.sin_addr));
+    socks5addr.sin_port = htons(socks5_port);
 
     SOCKS5 socks5((SOCKADDR*)&socks5addr,sizeof(socks5addr));
 
@@ -87,7 +91,7 @@ int Tcp2Socks_Process()
     sockaddr_in service;
     service.sin_family = AF_INET;
     inet_pton(AF_INET, "0.0.0.0", &(service.sin_addr));
-    service.sin_port = htons(2805);
+    service.sin_port = htons(tcp_port);
 
     if (bind(ListenSocket,
         (SOCKADDR*)&service, sizeof(service)) == SOCKET_ERROR) {

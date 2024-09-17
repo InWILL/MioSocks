@@ -8,6 +8,11 @@
 #pragma comment(lib,"../WinDivert/WinDivert.lib")
 #pragma comment(lib,"Ws2_32.lib")
 
+extern char socks5_server[100];
+extern unsigned short socks5_port;
+extern unsigned short tcp_port;
+extern char windivertopen[1000];
+
 //struct NetTuple
 //{
 //	UINT32 SrcAddr;

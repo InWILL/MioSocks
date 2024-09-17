@@ -2,6 +2,8 @@
 
 const int MAXBUF = 65536;
 
+char windivertopen[1000] = "tcp and localAddr != :: and remoteAddr != ::";
+
 void pend_syn(HANDLE handle, UINT16 local_port, char* packet, UINT32 packet_len, WINDIVERT_ADDRESS* addr)
 {
 	SYN* syn = (SYN*)malloc(sizeof(SYN) + packet_len);
@@ -26,7 +28,7 @@ int TCP_Proxy_Process()
 	HANDLE handle;          // WinDivert handle
 
 	// Open some filter
-	handle = WinDivertOpen("tcp and localAddr != :: and remoteAddr != ::", WINDIVERT_LAYER_NETWORK, 0, 0);
+	handle = WinDivertOpen(windivertopen, WINDIVERT_LAYER_NETWORK, 0, 0);
 	if (handle == INVALID_HANDLE_VALUE)
 	{
 		// Handle error
@@ -65,7 +67,7 @@ int TCP_Proxy_Process()
 
 		if (ip_header->Version == 4)
 		{
-			if (tcp_header->SrcPort == htons(2805))
+			if (tcp_header->SrcPort == htons(tcp_port))
 			{
 				printf("[<-]%u:%u %u:%u\n", srcaddr, srcport, dstaddr, dstport);
 
@@ -91,7 +93,7 @@ int TCP_Proxy_Process()
 				conns[srcport].DstPort = dstport;
 				
 				UINT32 dst_addr = ip_header->DstAddr;
-				tcp_header->DstPort = htons(2805);
+				tcp_header->DstPort = htons(tcp_port);
 				ip_header->DstAddr = ip_header->SrcAddr;
 				ip_header->SrcAddr = dst_addr;
 				addr.Outbound = FALSE;
