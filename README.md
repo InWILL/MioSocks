@@ -36,6 +36,7 @@ settings.json for MapleStory
 ## Built With
 
 * [WinDivert](https://github.com/basil00/WinDivert) - Used to handle tcp connection
+* [nlohmann.json](https://github.com/nlohmann/json) - Used to read json settings
 
 ## Versioning
 
@@ -83,6 +84,7 @@ settings.json for MapleStory
 ## 内置
 
 * [WinDivert](https://github.com/basil00/WinDivert) - 用于处理 tcp 连接
+* [nlohmann.json](https://github.com/nlohmann/json) - 用于读取json
 
 ## 版本控制
 
