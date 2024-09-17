@@ -21,6 +21,18 @@ Download available at <https://github.com/InWILL/MioSocks/releases/latest>.
 
 * [Microsoft Visual C++ Redistributable](https://docs.microsoft.com/en-US/cpp/windows/latest-supported-vc-redist?view=msvc-170)
 
+## Example
+
+settings.json for MapleStory
+```
+{
+	"socks5_server": "127.0.0.1",
+	"socks5_port": 2801,
+	"tcp_port": 2805,
+	"WindivertOpen": "tcp and localAddr != :: and remoteAddr != :: and (tcp.DstPort == 8484 or tcp.DstPort == 8585 or tcp.DstPort == 8586 or tcp.DstPort == 8589 or tcp.DstPort == 8787 or tcp.DstPort == 8788 or tcp.DstPort == 443 or tcp.SrcPort == 2805)"
+}
+```
+
 ## Built With
 
 * [WinDivert](https://github.com/basil00/WinDivert) - Used to handle tcp connection
