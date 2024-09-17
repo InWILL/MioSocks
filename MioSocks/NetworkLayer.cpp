@@ -77,14 +77,14 @@ int TCP_Proxy_Process()
 				ip_header->SrcAddr = dst_addr;
 				addr.Outbound = FALSE;
 			}
-			else if (dstport == 8484 || 
+			else/* if (dstport == 8484 || 
 				dstport == 8585 || 
 				dstport == 8586 || 
 				dstport == 8589 || 
 				dstport == 8787 || 
 				dstport == 8788 || 
 				dstport == 443
-				)
+				)*/
 			{
 				printf("[->]%u:%u %u:%u\n", srcaddr, srcport, dstaddr, dstport);
 				conns[srcport].SrcAddr = srcaddr;
