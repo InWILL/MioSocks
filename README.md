@@ -3,7 +3,7 @@
 ![GitHub License](https://img.shields.io/github/license/InWILL/MioSocks)
 ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/InWILL/MioSocks/total)
 
-### English | [简体中文]（https://github.com/InWILL/MioSocks#english--%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87）
+### English | [简体中文](https://github.com/InWILL/MioSocks#english--%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)
 
 Tcp2socks implementation by WinDivert.
 
