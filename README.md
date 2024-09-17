@@ -7,7 +7,7 @@
 
 Tcp2socks implementation by WinDivert.
 
-The project provides a solution to convert tcp connections to socks5.
+The project provides a solution to forward tcp connections to socks5.
 
 From 2023.11.29, MapleStory-Japan updated Nexon Game Security(NGS), it had been detecting [Netch](https://github.com/netchx/netch) Process Mode as suspicious activity. Tun Mode can use normally, but Tun mode means all connections have to be proxyed. So I base on WinDivert to design a tcp2socks software.
 
@@ -55,7 +55,7 @@ This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) 
 
 WinDivert 实现的 Tcp2socks。
 
-该项目提供了将 tcp 连接转换为 socks5 的解决方案。
+该项目提供了将 tcp 连接转发 socks5 的解决方案。
 
 从 2023.11.29 开始，日服冒险岛更新了Nexon Game Security(NGS)，一直将 [Netch](https://github.com/netchx/netch) 的进程模式检测为可疑活动。虽然Tun模式可以正常使用，但Tun模式意味着所有连接都必须代理。所以我基于WinDivert设计了一个tcp2socks软件。
 
