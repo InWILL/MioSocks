@@ -17,6 +17,8 @@ Download available at <https://github.com/InWILL/MioSocks/releases/latest>.
 
 ## Getting Started
 
+### Prerequisites
+
 * [Microsoft Visual C++ Redistributable](https://docs.microsoft.com/en-US/cpp/windows/latest-supported-vc-redist?view=msvc-170)
 
 ## Versioning
