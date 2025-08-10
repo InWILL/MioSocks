@@ -22,8 +22,8 @@ type Socket struct {
 	EndpointID       uint64
 	ParentEndpointID uint64
 	ProcessID        uint32
-	LocalAddress     [16]uint8
-	RemoteAddress    [16]uint8
+	LocalAddress     [4]uint32
+	RemoteAddress    [4]uint32
 	LocalPort        uint16
 	RemotePort       uint16
 	Protocol         uint8
