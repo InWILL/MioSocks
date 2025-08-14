@@ -1,33 +1,86 @@
-package proxy
+package socks
 
 import (
 	"bufio"
 	"context"
 	"encoding/binary"
+	"fmt"
 	"io"
 	"log"
 	"net"
 	"net/netip"
 
-	"github.com/metacubex/mihomo/adapter"
 	"github.com/metacubex/mihomo/constant"
 )
 
-type Proxy struct {
-	constant.Proxy
+type Socks5 interface {
+	Start()
+	Close()
+	UpdatePort(port uint16)
+	UpdateProxy(proxy constant.Proxy)
 }
 
-func NewProxy(mapping map[string]any) *Proxy {
-	proxy, err := adapter.ParseProxy(mapping)
+type Socks5Engine struct {
+	Port     uint16
+	Proxy    constant.Proxy
+	isClosed bool
+	listener net.Listener
+}
+
+type Socks5Options struct {
+	Port uint16
+	//AllowLAN bool
+	Dialer constant.Proxy
+}
+
+func NewSocks5(options Socks5Options) Socks5 {
+	return &Socks5Engine{
+		Port:     options.Port,
+		Proxy:    options.Dialer,
+		isClosed: false,
+	}
+}
+
+func (e *Socks5Engine) Start() {
+	addr := fmt.Sprintf(":%d", e.Port)
+
+	ln, err := net.Listen("tcp", addr)
 	if err != nil {
-		log.Fatalf("Failed to parse proxy: %v", err)
+		panic(err)
 	}
-	return &Proxy{
-		Proxy: proxy,
+
+	log.Printf("%s server: %s listening on %s", e.Proxy.Type(), e.Proxy.Name(), addr)
+
+	e.listener = ln
+
+	for {
+		conn, err := ln.Accept()
+		if err != nil {
+			if e.isClosed {
+				break
+			}
+			log.Printf("Failed to accept connection: %v", err)
+			continue
+		}
+		e.HandleConnection(conn)
 	}
 }
 
-func (p *Proxy) HandleConnection(conn net.Conn) {
+func (e *Socks5Engine) Close() {
+	e.isClosed = true
+	e.listener.Close()
+}
+
+func (e *Socks5Engine) UpdatePort(port uint16) {
+	e.Port = port
+	e.Close()
+}
+
+func (e *Socks5Engine) UpdateProxy(proxy constant.Proxy) {
+	e.Proxy = proxy
+}
+
+func (p *Socks5Engine) HandleConnection(conn net.Conn) {
 	bufReader := bufio.NewReader(conn)
 	peek, err := bufReader.Peek(1)
 	if err != nil {
@@ -44,7 +97,7 @@ func (p *Proxy) HandleConnection(conn net.Conn) {
 	}
 }
 
-func (p *Proxy) HandleSocks5(r *bufio.Reader, conn net.Conn) {
+func (p *Socks5Engine) HandleSocks5(r *bufio.Reader, conn net.Conn) {
 	log.Println("[SOCKS5] New connection established")
 
 	buf := make([]byte, 2)
@@ -89,7 +142,7 @@ func (p *Proxy) HandleSocks5(r *bufio.Reader, conn net.Conn) {
 		ip := net.IP(addr[:4])
 		metadata.DstIP = netip.MustParseAddr(ip.String())
 		metadata.DstPort = binary.BigEndian.Uint16(addr[4:])
-		log.Printf("[%s] Connecting to: %s:%d\n", p.Type(), metadata.DstIP, metadata.DstPort)
+		log.Printf("[%s] Connecting to: %s:%d\n", p.Proxy.Type(), metadata.DstIP, metadata.DstPort)
 
 	case 0x03: // Domain
 		lenByte, err := r.ReadByte()
@@ -104,7 +157,7 @@ func (p *Proxy) HandleSocks5(r *bufio.Reader, conn net.Conn) {
 		}
 		metadata.Host = string(domain[:lenByte])
 		metadata.DstPort = binary.BigEndian.Uint16(domain[lenByte:])
-		log.Printf("[%s] Connecting to: %s:%d\n", p.Type(), metadata.Host, metadata.DstPort)
+		log.Printf("[%s] Connecting to: %s:%d\n", p.Proxy.Type(), metadata.Host, metadata.DstPort)
 
 	default:
 		log.Println("[SOCKS5] Unsupported address type")
@@ -114,9 +167,9 @@ func (p *Proxy) HandleSocks5(r *bufio.Reader, conn net.Conn) {
 
 	// Dial through the proxy
 	ctx := context.Background()
-	dstConn, err := p.DialContext(ctx, metadata)
+	dstConn, err := p.Proxy.DialContext(ctx, metadata)
 	if err != nil {
-		log.Printf("[%s] Dial error: %v", p.Type(), err)
+		log.Printf("[%s] Dial error: %v", p.Proxy.Type(), err)
 		conn.Write([]byte{0x05, 0x05, 0x00, 0x01, 0, 0, 0, 0, 0, 0}) // connection refused
 		return
 	}
