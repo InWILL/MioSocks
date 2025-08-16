@@ -12,7 +12,7 @@ import (
 	"github.com/metacubex/mihomo/constant"
 )
 
-type Socks5Engine struct {
+type Socks5 struct {
 	Port     uint16
 	Proxy    constant.Proxy
 	isClosed bool
@@ -25,7 +25,7 @@ type Socks5Options struct {
 	Dialer constant.Proxy
 }
 
-func (p *Socks5Engine) HandleConnection(conn net.Conn) {
+func (p *Socks5) HandleConnection(conn net.Conn) {
 	bufReader := bufio.NewReader(conn)
 	peek, err := bufReader.Peek(1)
 	if err != nil {
@@ -42,7 +42,7 @@ func (p *Socks5Engine) HandleConnection(conn net.Conn) {
 	}
 }
 
-func (p *Socks5Engine) HandleSocks5(r *bufio.Reader, conn net.Conn) {
+func (p *Socks5) HandleSocks5(r *bufio.Reader, conn net.Conn) {
 	log.Println("[SOCKS5] New connection established")
 
 	buf := make([]byte, 2)

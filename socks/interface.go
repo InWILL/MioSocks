@@ -8,22 +8,22 @@ import (
 	"github.com/metacubex/mihomo/constant"
 )
 
-type Socks5 interface {
+type Socks5Interface interface {
 	Start()
 	Close()
 	UpdatePort(port uint16)
 	UpdateProxy(proxy constant.Proxy)
 }
 
-func NewSocks5(options Socks5Options) Socks5 {
-	return &Socks5Engine{
+func NewSocks5(options Socks5Options) Socks5Interface {
+	return &Socks5{
 		Port:     options.Port,
 		Proxy:    options.Dialer,
 		isClosed: false,
 	}
 }
 
-func (e *Socks5Engine) Start() {
+func (e *Socks5) Start() {
 	addr := fmt.Sprintf(":%d", e.Port)
 
 	ln, err := net.Listen("tcp", addr)
@@ -48,16 +48,16 @@ func (e *Socks5Engine) Start() {
 	}
 }
 
-func (e *Socks5Engine) Close() {
+func (e *Socks5) Close() {
 	e.isClosed = true
 	e.listener.Close()
 }
 
-func (e *Socks5Engine) UpdatePort(port uint16) {
+func (e *Socks5) UpdatePort(port uint16) {
 	e.Port = port
 	e.Close()
 }
 
-func (e *Socks5Engine) UpdateProxy(proxy constant.Proxy) {
+func (e *Socks5) UpdateProxy(proxy constant.Proxy) {
 	e.Proxy = proxy
 }

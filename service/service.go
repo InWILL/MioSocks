@@ -9,6 +9,7 @@ import (
 type MioService interface {
 	Start()
 	Close()
+	UpdateProxy(Proxy map[string]any) error
 }
 
 type Rules struct {
@@ -23,8 +24,8 @@ type MioOptions struct {
 }
 
 type MioEngine struct {
-	engine engine.Engine
-	socks5 socks.Socks5
+	engine engine.EngineInterface
+	socks5 socks.Socks5Interface
 }
 
 func NewService(options MioOptions) (MioService, error) {
@@ -39,7 +40,7 @@ func NewService(options MioOptions) (MioService, error) {
 			Dialer: dialer,
 		})
 	service := &MioEngine{
-		engine: *engine.NewEngine(dialer),
+		engine: engine.NewEngine(dialer),
 		socks5: socks5,
 	}
 	return service, nil
@@ -52,4 +53,16 @@ func (m *MioEngine) Start() {
 
 func (m *MioEngine) Close() {
 
+}
+
+func (m *MioEngine) UpdateProxy(proxy map[string]any) error {
+	dialer, err := adapter.ParseProxy(proxy)
+	if err != nil {
+		return err
+	}
+
+	m.engine.UpdateProxy(dialer)
+	m.socks5.UpdateProxy(dialer)
+
+	return nil
 }

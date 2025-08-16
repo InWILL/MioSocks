@@ -53,3 +53,7 @@ func forward(src, dest net.Conn) {
 	defer dest.Close()
 	io.Copy(src, dest)
 }
+
+func UpdateProxy(dialer constant.Proxy) {
+	core.RegisterTCPConnHandler(NewTCPHandler(dialer))
+}

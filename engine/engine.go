@@ -42,7 +42,7 @@ type Engine struct {
 	dialer   constant.Proxy
 }
 
-func NewEngine(dialer constant.Proxy) *Engine {
+func NewEngine(dialer constant.Proxy) EngineInterface {
 	h1, err := windivert.Open(Filter1, windivert.LayerSocket, 0, windivert.FlagRecvOnly|windivert.FlagSniff)
 	if err != nil {
 		panic(err)
@@ -68,6 +68,10 @@ func (e *Engine) Start() {
 	go e.SocketLayer()
 	go e.NetworkLayer()
 	go e.PacketHandler()
+}
+
+func (e *Engine) Close() {
+
 }
 
 func (e *Engine) SocketLayer() {
