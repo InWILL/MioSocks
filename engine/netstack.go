@@ -61,7 +61,7 @@ func forward_upstream(dst, src net.Conn) {
 func forward_downstream(dst, src net.Conn) {
 	defer src.Close()
 	defer dst.Close()
-	size, _ := io.Copy(src, dst)
+	size, _ := io.Copy(dst, src)
 	downstream += size
 }
 
