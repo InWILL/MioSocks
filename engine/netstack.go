@@ -6,6 +6,7 @@ import (
 	"log"
 	"net"
 	"net/netip"
+	"sync/atomic"
 
 	"github.com/eycorsican/go-tun2socks/core"
 	"github.com/metacubex/mihomo/constant"
@@ -55,14 +56,14 @@ func forward_upstream(dst, src net.Conn) {
 	defer src.Close()
 	defer dst.Close()
 	size, _ := io.Copy(dst, src)
-	upstream += size
+	atomic.AddInt64(&upstream, size)
 }
 
 func forward_downstream(dst, src net.Conn) {
 	defer src.Close()
 	defer dst.Close()
 	size, _ := io.Copy(dst, src)
-	downstream += size
+	atomic.AddInt64(&downstream, size)
 }
 
 func (e *Engine) UpdateProxy(dialer constant.Proxy) {
