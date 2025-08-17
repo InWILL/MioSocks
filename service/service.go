@@ -10,6 +10,8 @@ type MioService interface {
 	Start()
 	Close()
 	UpdateProxy(Proxy map[string]any) error
+	GetUpStream() int64
+	GetDownStream() int64
 }
 
 type Rules struct {
