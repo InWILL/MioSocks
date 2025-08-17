@@ -66,3 +66,11 @@ func (m *MioEngine) UpdateProxy(proxy map[string]any) error {
 
 	return nil
 }
+
+func (m *MioEngine) GetUpStream() int64 {
+	return m.engine.GetUpStream() + m.socks5.GetUpStream()
+}
+
+func (m *MioEngine) GetDownStream() int64 {
+	return m.engine.GetDownStream() + m.socks5.GetDownStream()
+}

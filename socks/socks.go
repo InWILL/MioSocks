@@ -12,6 +12,9 @@ import (
 	"github.com/metacubex/mihomo/constant"
 )
 
+var upstream int64
+var downstream int64
+
 type Socks5 struct {
 	Port     uint16
 	Proxy    constant.Proxy
@@ -123,12 +126,28 @@ func (p *Socks5) HandleSocks5(r *bufio.Reader, conn net.Conn) {
 	conn.Write([]byte{0x05, 0x00, 0x00, 0x01, 0, 0, 0, 0, 0, 0})
 
 	// 7. 数据转发
-	go forward(dstConn, conn)
-	go forward(conn, dstConn)
+	go forward_upstream(dstConn, conn)
+	go forward_downstream(conn, dstConn)
 }
 
-func forward(src, dest net.Conn) {
+func forward_upstream(dst, src net.Conn) {
 	defer src.Close()
-	defer dest.Close()
-	io.Copy(src, dest)
+	defer dst.Close()
+	size, _ := io.Copy(dst, src)
+	upstream += size
+}
+
+func forward_downstream(dst, src net.Conn) {
+	defer src.Close()
+	defer dst.Close()
+	size, _ := io.Copy(src, dst)
+	downstream += size
+}
+
+func (e *Socks5) GetUpStream() int64 {
+	return upstream
+}
+
+func (e *Socks5) GetDownStream() int64 {
+	return downstream
 }

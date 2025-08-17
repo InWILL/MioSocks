@@ -11,6 +11,9 @@ import (
 	"github.com/metacubex/mihomo/constant"
 )
 
+var upstream int64
+var downstream int64
+
 type tcpHandler struct {
 	constant.Proxy
 }
@@ -42,18 +45,34 @@ func (h *tcpHandler) Handle(conn net.Conn, target *net.TCPAddr) error {
 		return err
 	}
 
-	go forward(dstConn, conn)
-	go forward(conn, dstConn)
+	go forward_upstream(dstConn, conn)
+	go forward_downstream(conn, dstConn)
 
 	return nil
 }
 
-func forward(src, dest net.Conn) {
+func forward_upstream(dst, src net.Conn) {
 	defer src.Close()
-	defer dest.Close()
-	io.Copy(src, dest)
+	defer dst.Close()
+	size, _ := io.Copy(dst, src)
+	upstream += size
 }
 
-func UpdateProxy(dialer constant.Proxy) {
+func forward_downstream(dst, src net.Conn) {
+	defer src.Close()
+	defer dst.Close()
+	size, _ := io.Copy(src, dst)
+	downstream += size
+}
+
+func (e *Engine) UpdateProxy(dialer constant.Proxy) {
 	core.RegisterTCPConnHandler(NewTCPHandler(dialer))
+}
+
+func (e *Engine) GetUpStream() int64 {
+	return upstream
+}
+
+func (e *Engine) GetDownStream() int64 {
+	return downstream
 }

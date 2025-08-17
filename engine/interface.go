@@ -8,8 +8,6 @@ type EngineInterface interface {
 	Start()
 	Close()
 	UpdateProxy(dialer constant.Proxy)
-}
-
-func (e *Engine) UpdateProxy(dialer constant.Proxy) {
-	UpdateProxy(dialer)
+	GetUpStream() int64
+	GetDownStream() int64
 }

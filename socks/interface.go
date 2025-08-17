@@ -13,6 +13,8 @@ type Socks5Interface interface {
 	Close()
 	UpdatePort(port uint16)
 	UpdateProxy(proxy constant.Proxy)
+	GetUpStream() int64
+	GetDownStream() int64
 }
 
 func NewSocks5(options Socks5Options) Socks5Interface {
