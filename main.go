@@ -6,17 +6,16 @@ import (
 	"log"
 	"os"
 
-	"github.com/InWILL/MioSocks/config"
 	"github.com/InWILL/MioSocks/service"
 )
 
-func ParseConfig(file string) config.Options {
+func ParseConfig(file string) service.MioOptions {
 	data, err := os.ReadFile(file)
 	if err != nil {
 		panic(err)
 	}
 
-	config := config.Options{}
+	config := service.MioOptions{}
 	err = json.Unmarshal(data, &config)
 	if err != nil {
 		panic(err)

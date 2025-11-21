@@ -5,7 +5,6 @@ import (
 	"log"
 	"net"
 
-	"github.com/InWILL/MioSocks/config"
 	"github.com/metacubex/mihomo/constant"
 )
 
@@ -18,7 +17,7 @@ type Socks5Interface interface {
 	GetDownStream() int64
 }
 
-func NewSocks5(options config.Options) Socks5Interface {
+func NewSocks5(options Socks5Options) Socks5Interface {
 	return &Socks5{
 		Port:     options.Port,
 		Proxy:    options.Dialer,

@@ -6,10 +6,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/InWILL/MioSocks/config"
 	"github.com/InWILL/MioSocks/windivert"
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
+	"github.com/metacubex/mihomo/constant"
 )
 
 const (
@@ -39,10 +39,10 @@ type Engine struct {
 	session  sync.Map
 	writer   io.Writer
 	queue    Queue[Packet]
-	options  config.Options
+	dialer   constant.Proxy
 }
 
-func NewEngine(options config.Options) EngineInterface {
+func NewEngine(dialer constant.Proxy) EngineInterface {
 	h1, err := windivert.Open(Filter1, windivert.LayerSocket, 0, windivert.FlagRecvOnly|windivert.FlagSniff)
 	if err != nil {
 		panic(err)
@@ -58,7 +58,7 @@ func NewEngine(options config.Options) EngineInterface {
 		hNetwork: h2,
 		channel:  make(chan Packet),
 		Process:  make(map[uint32]bool),
-		options:  options,
+		dialer:   dialer,
 	}
 	engine.writer = engine.NewStack()
 	return engine

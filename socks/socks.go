@@ -23,6 +23,12 @@ type Socks5 struct {
 	listener net.Listener
 }
 
+type Socks5Options struct {
+	Port uint16
+	//AllowLAN bool
+	Dialer constant.Proxy
+}
+
 func (p *Socks5) HandleConnection(conn net.Conn) {
 	bufReader := bufio.NewReader(conn)
 	peek, err := bufReader.Peek(1)

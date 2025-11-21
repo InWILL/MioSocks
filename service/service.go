@@ -1,7 +1,6 @@
 package service
 
 import (
-	"github.com/InWILL/MioSocks/config"
 	"github.com/InWILL/MioSocks/engine"
 	"github.com/InWILL/MioSocks/socks"
 	"github.com/metacubex/mihomo/adapter"
@@ -15,22 +14,36 @@ type MioService interface {
 	GetDownStream() int64
 }
 
-type MioEngine struct {
-	socks5 socks.Socks5Interface
-	engine engine.EngineInterface
+type Rules struct {
+	Domain  []string `json:"domain,omitempty"`
+	Process []string `json:"process,omitempty"`
 }
 
-func NewService(options config.Options) (MioService, error) {
-	err := options.ParseProxy()
+type MioOptions struct {
+	Port  uint16         `json:"port"`
+	Proxy map[string]any `json:"proxy"`
+	Rules Rules          `json:"rules,omitempty"`
+}
+
+type MioEngine struct {
+	engine engine.EngineInterface
+	socks5 socks.Socks5Interface
+}
+
+func NewService(options MioOptions) (MioService, error) {
+	dialer, err := adapter.ParseProxy(options.Proxy)
 	if err != nil {
 		return nil, err
 	}
 
-	socks5 := socks.NewSocks5(options)
-	engine := engine.NewEngine(options)
+	socks5 := socks.NewSocks5(
+		socks.Socks5Options{
+			Port:   options.Port,
+			Dialer: dialer,
+		})
 	service := &MioEngine{
+		engine: engine.NewEngine(dialer),
 		socks5: socks5,
-		engine: engine,
 	}
 	return service, nil
 }
