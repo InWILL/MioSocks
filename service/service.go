@@ -36,13 +36,20 @@ func NewService(options MioOptions) (MioService, error) {
 		return nil, err
 	}
 
+	engine := engine.NewEngine(
+		engine.EngineOptions{
+			Dialer:  dialer,
+			Process: options.Rules.Process,
+		})
+
 	socks5 := socks.NewSocks5(
 		socks.Socks5Options{
 			Port:   options.Port,
 			Dialer: dialer,
 		})
+
 	service := &MioEngine{
-		engine: engine.NewEngine(dialer),
+		engine: engine,
 		socks5: socks5,
 	}
 	return service, nil

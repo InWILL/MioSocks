@@ -3,6 +3,7 @@ package engine
 import (
 	"io"
 	"log"
+	"slices"
 	"sync"
 	"time"
 
@@ -35,14 +36,20 @@ type Engine struct {
 	hSocket  *windivert.Handle
 	hNetwork *windivert.Handle
 	channel  chan Packet
-	Process  map[uint32]bool
+	bProcess map[uint32]bool
 	session  sync.Map
 	writer   io.Writer
 	queue    Queue[Packet]
 	dialer   constant.Proxy
+	Process  []string
 }
 
-func NewEngine(dialer constant.Proxy) EngineInterface {
+type EngineOptions struct {
+	Dialer  constant.Proxy
+	Process []string
+}
+
+func NewEngine(options EngineOptions) EngineInterface {
 	h1, err := windivert.Open(Filter1, windivert.LayerSocket, 0, windivert.FlagRecvOnly|windivert.FlagSniff)
 	if err != nil {
 		panic(err)
@@ -57,8 +64,9 @@ func NewEngine(dialer constant.Proxy) EngineInterface {
 		hSocket:  h1,
 		hNetwork: h2,
 		channel:  make(chan Packet),
-		Process:  make(map[uint32]bool),
-		dialer:   dialer,
+		bProcess: make(map[uint32]bool),
+		dialer:   options.Dialer,
+		Process:  options.Process,
 	}
 	engine.writer = engine.NewStack()
 	return engine
@@ -88,7 +96,7 @@ func (e *Engine) SocketLayer() {
 		DstPort := address.Socket().RemotePort
 		PID := address.Socket().ProcessID
 
-		if val, ok := e.Process[PID]; ok {
+		if val, ok := e.bProcess[PID]; ok {
 			tuple := Tuple{
 				Protocol: Protocol,
 				SrcPort:  SrcPort,
@@ -102,10 +110,10 @@ func (e *Engine) SocketLayer() {
 		} else {
 			name, _ := GetProcName(PID)
 			log.Printf("Program:%s PID:%d %d:%d\n", name, PID, SrcPort, DstPort)
-			if name == "MapleStory.exe" {
-				e.Process[PID] = true
+			if slices.Contains(e.Process, name) {
+				e.bProcess[PID] = true
 			} else {
-				e.Process[PID] = false
+				e.bProcess[PID] = false
 			}
 		}
 
