@@ -20,7 +20,7 @@ type tcpHandler struct {
 }
 
 func (e *Engine) NewStack() io.Writer {
-	core.RegisterTCPConnHandler(NewTCPHandler(e.dialer))
+	core.RegisterTCPConnHandler(NewTCPHandler(e.options.Dialer))
 	core.RegisterOutputFn(e.NetStack_Output)
 	netstack := core.NewLWIPStack()
 	return netstack
