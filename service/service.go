@@ -58,7 +58,6 @@ func NewService(options MioOptions) (MioService, error) {
 func (m *MioEngine) Start() {
 	m.engine.Start()
 	m.socks5.Start()
-	NewRestAPI(62334)
 }
 
 func (m *MioEngine) Close() {

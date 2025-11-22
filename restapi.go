@@ -1,4 +1,4 @@
-package service
+package main
 
 import (
 	"fmt"
@@ -16,6 +16,10 @@ func NewRestAPI(port uint16) {
 		c.JSON(200, gin.H{
 			"version": "1.0.0",
 		})
+	})
+
+	router.GET("/config", func(c *gin.Context) {
+		c.JSON(200, globalConfig)
 	})
 
 	host := fmt.Sprintf("localhost:%d", port)

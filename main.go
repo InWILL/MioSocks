@@ -36,4 +36,5 @@ func main() {
 	}
 
 	service.Start()
+	NewRestAPI(62334)
 }
