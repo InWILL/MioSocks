@@ -26,28 +26,29 @@ func NewSocks5(options Socks5Options) Socks5Interface {
 }
 
 func (e *Socks5) Start() {
-	addr := fmt.Sprintf(":%d", e.Port)
+	go func() {
+		addr := fmt.Sprintf(":%d", e.Port)
 
-	ln, err := net.Listen("tcp", addr)
-	if err != nil {
-		panic(err)
-	}
-
-	log.Printf("%s server: %s listening on %s", e.Proxy.Type(), e.Proxy.Name(), addr)
-
-	e.listener = ln
-
-	for {
-		conn, err := ln.Accept()
+		ln, err := net.Listen("tcp", addr)
 		if err != nil {
-			if e.isClosed {
-				break
-			}
-			log.Printf("Failed to accept connection: %v", err)
-			continue
+			panic(err)
 		}
-		e.HandleConnection(conn)
-	}
+
+		log.Printf("%s server: %s listening on %s", e.Proxy.Type(), e.Proxy.Name(), addr)
+
+		e.listener = ln
+		for {
+			conn, err := ln.Accept()
+			if err != nil {
+				if e.isClosed {
+					break
+				}
+				log.Printf("Failed to accept connection: %v", err)
+				continue
+			}
+			e.HandleConnection(conn)
+		}
+	}()
 }
 
 func (e *Socks5) Close() {
