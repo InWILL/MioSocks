@@ -3,11 +3,20 @@ package service
 import (
 	"fmt"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 func (m *MioEngine) NewRestAPI(port uint16) {
 	router := gin.Default()
+
+	router.Use(cors.New(cors.Config{
+		AllowAllOrigins: true,
+		AllowMethods:    []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:    []string{"Origin", "Content-Type", "Accept", "Authorization"},
+		ExposeHeaders:   []string{"Content-Length"},
+	}))
+
 	router.GET("/version", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"version": "1.0.0",
