@@ -30,11 +30,10 @@ func main() {
 	flag.Parse()
 	globalConfig := ParseConfig(*config)
 
-	service, err := service.NewService(globalConfig)
+	m, err := service.NewService(globalConfig)
 	if err != nil {
 		log.Fatalf("Failed to parse proxy: %v", err)
 	}
 
-	service.Start()
-	NewRestAPI(62334)
+	m.Start()
 }

@@ -49,7 +49,7 @@ type EngineOptions struct {
 	Process []string
 }
 
-func NewEngine(options EngineOptions) EngineInterface {
+func NewEngine(options EngineOptions) *Engine {
 	h1, err := windivert.Open(Filter1, windivert.LayerSocket, 0, windivert.FlagRecvOnly|windivert.FlagSniff)
 	if err != nil {
 		panic(err)
@@ -70,6 +70,16 @@ func NewEngine(options EngineOptions) EngineInterface {
 	}
 	engine.writer = engine.NewStack()
 	return engine
+}
+
+func (e *Engine) UpdateEngine(options EngineOptions) error {
+	if e.dialer != options.Dialer {
+		e.dialer = options.Dialer
+	}
+	if !slices.Equal(e.Process, options.Process) {
+		e.Process = options.Process
+	}
+	return nil
 }
 
 func (e *Engine) Start() {

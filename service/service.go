@@ -6,14 +6,6 @@ import (
 	"github.com/metacubex/mihomo/adapter"
 )
 
-type MioService interface {
-	Start()
-	Close()
-	UpdateProxy(Proxy map[string]any) error
-	GetUpStream() int64
-	GetDownStream() int64
-}
-
 type Rules struct {
 	Domain  []string `json:"domain,omitempty"`
 	Process []string `json:"process,omitempty"`
@@ -26,11 +18,12 @@ type MioOptions struct {
 }
 
 type MioEngine struct {
-	engine engine.EngineInterface
-	socks5 socks.Socks5Interface
+	options *MioOptions
+	engine  *engine.Engine
+	socks5  *socks.Socks5
 }
 
-func NewService(options MioOptions) (MioService, error) {
+func NewService(options MioOptions) (*MioEngine, error) {
 	dialer, err := adapter.ParseProxy(options.Proxy)
 	if err != nil {
 		return nil, err
@@ -48,20 +41,40 @@ func NewService(options MioOptions) (MioService, error) {
 			Dialer: dialer,
 		})
 
-	service := &MioEngine{
-		engine: engine,
-		socks5: socks5,
+	m := &MioEngine{
+		options: &options,
+		engine:  engine,
+		socks5:  socks5,
 	}
-	return service, nil
+	return m, nil
 }
 
 func (m *MioEngine) Start() {
 	m.engine.Start()
 	m.socks5.Start()
+	m.NewRestAPI(62334)
 }
 
 func (m *MioEngine) Close() {
 
+}
+
+func (m *MioEngine) UpdateConfig(options MioOptions) error {
+	dialer, err := adapter.ParseProxy(options.Proxy)
+	if err != nil {
+		return err
+	}
+	m.socks5.UpdateSocks5(socks.Socks5Options{
+		Port:   options.Port,
+		Dialer: dialer,
+	})
+	m.engine.UpdateEngine(engine.EngineOptions{
+		Dialer:  dialer,
+		Process: options.Rules.Process,
+	})
+
+	m.options = &options
+	return nil
 }
 
 func (m *MioEngine) UpdateProxy(proxy map[string]any) error {

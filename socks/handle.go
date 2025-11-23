@@ -16,19 +16,6 @@ import (
 var upstream int64
 var downstream int64
 
-type Socks5 struct {
-	Port     uint16
-	Proxy    constant.Proxy
-	isClosed bool
-	listener net.Listener
-}
-
-type Socks5Options struct {
-	Port uint16
-	//AllowLAN bool
-	Dialer constant.Proxy
-}
-
 func (p *Socks5) HandleConnection(conn net.Conn) {
 	bufReader := bufio.NewReader(conn)
 	peek, err := bufReader.Peek(1)
