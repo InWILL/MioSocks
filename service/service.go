@@ -49,21 +49,12 @@ func NewService(options MioOptions) (*MioEngine, error) {
 	return m, nil
 }
 
-func (m *MioEngine) Start() {
-	m.engine.Start()
-	m.socks5.Start()
-	m.NewRestAPI(62334)
-}
-
-func (m *MioEngine) Close() {
-
-}
-
-func (m *MioEngine) UpdateConfig(options MioOptions) error {
+func (m *MioEngine) UpdateService(options MioOptions) error {
 	dialer, err := adapter.ParseProxy(options.Proxy)
 	if err != nil {
 		return err
 	}
+
 	m.socks5.UpdateSocks5(socks.Socks5Options{
 		Port:   options.Port,
 		Dialer: dialer,
@@ -75,6 +66,16 @@ func (m *MioEngine) UpdateConfig(options MioOptions) error {
 
 	m.options = &options
 	return nil
+}
+
+func (m *MioEngine) Start() {
+	m.engine.Start()
+	m.socks5.Start()
+	m.NewRestAPI(62334)
+}
+
+func (m *MioEngine) Close() {
+
 }
 
 func (m *MioEngine) UpdateProxy(proxy map[string]any) error {
