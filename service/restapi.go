@@ -24,11 +24,15 @@ func (m *MioEngine) NewRestAPI(port uint16) {
 	})
 
 	router.GET("/config", func(c *gin.Context) {
-		c.JSON(200, m.options)
+		c.JSON(200, gin.H{
+			"port":    m.options.Port,
+			"version": "2025.11.24",
+		})
 	})
 
 	router.GET("/traffic", func(c *gin.Context) {
 		c.JSON(200, gin.H{
+			"name":       m.options.Proxy["name"],
 			"upstream":   m.GetUpStream(),
 			"downstream": m.GetDownStream(),
 		})
