@@ -44,6 +44,7 @@ func (m *MioEngine) NewRestAPI(port uint16) {
 			c.JSON(400, gin.H{"error": err.Error()})
 			return
 		}
+		m.UpdateService(options)
 		c.JSON(200, gin.H{"status": "config updated"})
 	})
 
