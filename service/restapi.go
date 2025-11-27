@@ -48,6 +48,21 @@ func (m *MioEngine) NewRestAPI(port uint16) {
 		c.JSON(200, gin.H{"status": "config updated"})
 	})
 
+	router.GET("/delay", func(c *gin.Context) {
+		// var proxy map[string]any
+		// if err := c.ShouldBindJSON(&proxy); err != nil {
+		// 	c.JSON(400, gin.H{"error": err.Error()})
+		// 	return
+		// }
+		t, err := m.DelayTest(m.options.Proxy)
+		if err != nil {
+			fmt.Printf("Delay test error: %v\n", err)
+			c.JSON(200, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(200, gin.H{"status": t})
+	})
+
 	host := fmt.Sprintf("localhost:%d", port)
 
 	router.Run(host)

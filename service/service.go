@@ -1,9 +1,16 @@
 package service
 
 import (
+	"bufio"
+	"context"
+	"fmt"
+	"strings"
+	"time"
+
 	"github.com/InWILL/MioSocks/engine"
 	"github.com/InWILL/MioSocks/socks"
 	"github.com/metacubex/mihomo/adapter"
+	"github.com/metacubex/mihomo/constant"
 )
 
 type Rules struct {
@@ -96,4 +103,49 @@ func (m *MioEngine) GetUpStream() int64 {
 
 func (m *MioEngine) GetDownStream() int64 {
 	return m.engine.GetDownStream() + m.socks5.GetDownStream()
+}
+
+func (m *MioEngine) DelayTest(proxy map[string]any) (int64, error) {
+	metadata := &constant.Metadata{
+		NetWork: constant.TCP,
+		Host:    "clients3.google.com",
+		DstPort: 80,
+	}
+	dialer, err := adapter.ParseProxy(proxy)
+	if err != nil {
+		fmt.Println("Parse proxy error:", err)
+		return 0, err
+	}
+	ctx := context.Background()
+	conn, err := dialer.DialContext(ctx, metadata)
+	if err != nil {
+		fmt.Println("DialContext error:", err)
+		return 0, err
+	}
+	defer conn.Close()
+
+	start := time.Now()
+
+	// 发送 HTTP GET 请求
+	req := "GET /generate_204 HTTP/1.1\r\n" +
+		"Host: clients3.google.com\r\n" +
+		"Connection: close\r\n\r\n"
+
+	_, err = conn.Write([]byte(req))
+	if err != nil {
+		panic(err)
+	}
+
+	// 读取响应头
+	reader := bufio.NewReader(conn)
+	statusLine, err := reader.ReadString('\n')
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("响应状态行:", strings.TrimSpace(statusLine))
+	delay := time.Since(start)
+
+	fmt.Println(delay)
+	return delay.Milliseconds(), nil
 }
